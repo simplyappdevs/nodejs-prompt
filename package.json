@@ -4,7 +4,10 @@
   "description": "NodeJS prompt module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \\\"--NO TEST--\\\""
+    "test": "echo \"--NO TEST--\"",
+    "tsc": "tsc",
+    "build": "npm run tsc",
+    "exec": "node ./dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/simplyappdevs/nodejs-prompt/issues"
   },
-  "homepage": "https://github.com/simplyappdevs/nodejs-prompt#readme"
+  "homepage": "https://github.com/simplyappdevs/nodejs-prompt#readme",
+  "devDependencies": {
+    "@types/node": "^14.0.27",
+    "typescript": "^3.9.7"
+  }
 }
