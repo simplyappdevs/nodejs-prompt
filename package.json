@@ -1,0 +1,26 @@
+{
+  "name": "nodejs-prompt",
+  "version": "0.0.1",
+  "description": "NodeJS prompt module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"--NO TEST--\\\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simplyappdevs/nodejs-prompt.git"
+  },
+  "keywords": [
+    "node",
+    "prompt",
+    "stdin",
+    "readline",
+    "module"
+  ],
+  "author": "SimplyAppDevs",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/simplyappdevs/nodejs-prompt/issues"
+  },
+  "homepage": "https://github.com/simplyappdevs/nodejs-prompt#readme"
+}
