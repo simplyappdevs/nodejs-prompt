@@ -2,13 +2,21 @@
   "name": "nodejs-prompt",
   "version": "0.1.0",
   "description": "NodeJS prompt module",
-  "main": "index.js",
+  "main": "./dist/esm/index.js",
+  "exports":{
+    "default": "./dist/esm/index.js",
+    "import": "./dist/esm/index.js",
+    "require": "./dist/index.js"
+  },
+  "type": "module",
+  "module": "./dist/esm/index.js",
   "scripts": {
     "test": "echo \"--NO TEST--\"",
     "tsc": "tsc",
     "build:common": "tsc --project tsconfig.json",
     "build:esm": "tsc --project tsconfig-esm.json",
-    "build": "npm run build:common && npm run build:esm",
+    "build:clean": "rm -rf ./dist/*",
+    "build": "npm run build:clean && npm run build:common && npm run build:esm",
     "exec": "node ./dist/index.js"
   },
   "repository": {
@@ -23,7 +31,7 @@
     "module"
   ],
   "author": "SimplyAppDevs",
-  "license": "UNLICENSED",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/simplyappdevs/nodejs-prompt/issues"
   },
