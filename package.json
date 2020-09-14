@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"--NO TEST--\"",
     "tsc": "tsc",
-    "build": "npm run tsc",
+    "build:common": "tsc --project tsconfig.json",
+    "build:esm": "tsc --project tsconfig-esm.json",
+    "build": "npm run build:common && npm run build:esm",
     "exec": "node ./dist/index.js"
   },
   "repository": {
