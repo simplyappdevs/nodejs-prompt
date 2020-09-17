@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "NodeJS prompt module",
   "main": "./dist/esm/index.js",
-  "exports":{
+  "exports": {
     "default": "./dist/esm/index.js",
     "import": "./dist/esm/index.js",
     "require": "./dist/cjs/index.js"
@@ -15,8 +15,8 @@
     "README.md"
   ],
   "scripts": {
-    "test": "echo \"--NO TEST--\"",
     "tsc": "tsc",
+    "test": "jest",
     "build:common": "tsc --project tsconfig.json",
     "build:esm": "tsc --project tsconfig-esm.json",
     "build:clean": "rm -rf ./dist/*",
@@ -42,7 +42,13 @@
   },
   "homepage": "https://github.com/simplyappdevs/nodejs-prompt#readme",
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/jest": "^26.0.13",
     "@types/node": "^14.0.27",
+    "babel-jest": "^26.3.0",
+    "jest": "^26.4.2",
     "typescript": "^3.9.7"
   }
 }
