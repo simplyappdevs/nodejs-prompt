@@ -52,6 +52,8 @@ class PromptImpl {
       output: process.stdout
     });
 
+    console.log(`${JSON.stringify(this.rl)}`);
+
     // trap events
     this.rl.on('line', (input: string) => {
       if (this.onLineCB) {
@@ -296,7 +298,7 @@ class PromptImpl {
 }
 
 // private prompt module
-const prompt: PromptImpl = new PromptImpl();
+let prompt: PromptImpl; // = new PromptImpl();
 
 /**
  * Prompt module definition
@@ -312,6 +314,7 @@ export interface Prompt {
 const prompter: Prompt = {
   prompt: async (inp: PromptInput): Promise<PromptResult> => {
     if (inp) {
+      prompt = new PromptImpl();
       return prompt.prompt(inp);
     } else {
       throw new Error(`Invalid PromptInput`);
