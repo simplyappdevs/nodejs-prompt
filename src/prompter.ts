@@ -20,6 +20,7 @@ export interface PromptInput {
   prompt: string;             // prompt text to display for user - default to "Enter your selection: "
   promptList?: PromptItem[];  // (optional) array of prompt items
   endIfEmpty: boolean;        // end prompt if user does not select from selection or enter empty response (otherwise prompt will just loop)
+  allowEmptyValue: boolean;   // true to accept empty string as valid input when endIfEmpty=false, false will keep looping until value is entered (non list prompt only)
   defaultValue: string;       // default value to return if user does not select from selection or enter empty response
   valueToEndPrompt: string;   // value that user can enter to end the prompt
 }
@@ -52,29 +53,13 @@ class PromptImpl {
       output: process.stdout
     });
 
-    console.log(`${JSON.stringify(this.rl)}`);
-
     // trap events
     this.rl.on('line', (input: string) => {
-      if (this.onLineCB) {
-        this.onLineCB(input);
-      }
+      this.onLineCB(input);
     }).on('close', () => {
-      if (this.onCloseCB) {
-        this.onCloseCB();
-      }
-    }).on('pause', () => {
-      if (this.onPauseResumeCB) {
-        this.onPauseResumeCB(true);
-      }
-    }).on('resume', () => {
-      if (this.onPauseResumeCB) {
-        this.onPauseResumeCB(false);
-      }
+      this.onCloseCB();
     }).on('SIGTSTP', () => {
-      if (this.onInterruptedCB) {
-        this.onInterruptedCB('SIGTSTP');
-      }
+      this.onInterruptedCB('SIGTSTP');
     });
 
     // default cb
@@ -93,12 +78,6 @@ class PromptImpl {
   private defOnCloseCB() {};
 
   /**
-   * Default pause/resume event handlers
-   * @param isPaused True if paused, false if resumed
-   */
-  private defOnPauseResumeCB(isPaused: boolean) {};
-
-  /**
    * Default interrupted event handler
    * @param type Type of interruption SIGTSTP, SIGINT, SIGCONT
    */
@@ -110,7 +89,6 @@ class PromptImpl {
   private setDefaultCBs() {
     this.onLineCB = this.defOnLineCB;
     this.onCloseCB = this.defOnCloseCB;
-    this.onPauseResumeCB = this.defOnPauseResumeCB;
     this.onInterruptedCB = this.defOnInterruptedCB;
   }
 
@@ -136,7 +114,8 @@ class PromptImpl {
         reject(new Error(`Stream interrupted: ${type}`));
       };
 
-      console.log('');
+      // spacing
+      let promptText: string = `\n`;
 
       // display list if any
       if (inp.promptList && inp.promptList.length > 0) {
@@ -153,7 +132,8 @@ class PromptImpl {
         const maxKeyLen: number = maxKeyItem.key.length + 3;
 
         inp.promptList.forEach((item: PromptItem) => {
-          console.log(`${item.key.padEnd(maxKeyLen, ' ')}${item.text}`);
+          // prompt list
+          promptText += `${item.key.padEnd(maxKeyLen, ' ')}${item.text}\n`;
         });
       }
 
@@ -166,7 +146,9 @@ class PromptImpl {
         prompt = `${inp.prompt} > `;
       }
 
-      this.rl.setPrompt(prompt);
+      promptText += prompt;
+
+      this.rl.setPrompt(promptText);
       this.rl.prompt();
     });
   }
@@ -176,45 +158,57 @@ class PromptImpl {
    * @param inp PromptInput
    */
   private async getInputCheck(inp: PromptInput): Promise<PromptResult> {
-    let stayLoop: boolean = true;
     let res: PromptResult;
     let errMsg: string = '';
 
-    while (stayLoop) {
+    // ingoring JEST coverage warning here
+    while (true) {
       // reset CBs
       this.setDefaultCBs();
 
       // get input
+      //console.log(`${Date.now().toString()}::getInput(): input: ${JSON.stringify(inp)}`);
       res = await this.getInput(inp);
 
       // determine if there is a prompt list
       const hasPromptList: boolean = inp.promptList ? inp.promptList.length > 0 ? true : false : false;
 
       // figure out if we need to keep looping (if user entered invalid option for list)
-      if (res.endIfEmpty && inp.defaultValue === '' && res.enteredValue === '') {
+      if (inp.endIfEmpty && res.enteredValue === '') {
         // exit error since user input nothing
-        stayLoop = false;
         errMsg = `User did not enter value`;
 
         break;
       }
 
-      if (inp.defaultValue !== '' && res.enteredValue === '') {
+      if (inp.defaultValue !== '' && res.enteredValue === '' && inp.allowEmptyValue) {
         // ok to not enter any input since there is default value
-        stayLoop = false;
         res.enteredValue = inp.defaultValue;
 
         break;
       }
 
-      if (!hasPromptList && res.enteredValue !== '') {
-        // got input
-        stayLoop = false;
+      // non-list prompt
+      if (!hasPromptList) {
+        // has input
+        if (res.enteredValue !== '') {
+          break;
+        }
 
-        break;
+        // no input but empty string allowed
+        if (inp.allowEmptyValue && res.enteredValue === '') {
+          break;
+        }
       }
 
-      if (hasPromptList && res.enteredValue !== '') {
+      if (hasPromptList) {
+        // determine "enteredValue"
+        if (res.enteredValue === '' && inp.defaultValue !== '') {
+          // use default value
+          res.enteredValue = inp.defaultValue;
+        }
+
+        // lowercase for comparison
         const inputVal: string = res.enteredValue.toLowerCase();
 
         // validate the entered value is one of the list
@@ -224,8 +218,6 @@ class PromptImpl {
 
         if (found) {
           // user entered one of the options
-          stayLoop = false;
-
           break;
         }
       }
@@ -241,27 +233,11 @@ class PromptImpl {
   }
 
   /**
-   * Single prompt
-   * @param inp PromptInput
-   */
-  public async prompt(inp: PromptInput): Promise<PromptResult> {
-    return this.prompts([inp]).then((res: PromptResult[]) => {
-      return res[0];
-    });
-  }
-
-  /**
    * Multiple prompts
    * @param inps PromptInput[]
    */
   public async prompts(inps: PromptInput[]): Promise<PromptResult[]> {
     return new Promise((resolve, reject) => {
-      // invalid input
-      if (!inps || inps.length === 0) {
-        reject(new Error(`Invalid parameters`));
-        return;
-      }
-
       // result
       const res: PromptResult[] = [];
 
@@ -275,13 +251,12 @@ class PromptImpl {
             res.push(inpRes);
           }
 
+          //console.log(`${Date.now().toString()}::prompts(): input: ${JSON.stringify(cur)}`);
           return this.getInputCheck(cur);
         });
       }, Promise.resolve(initRes)).then((inpRes: PromptResult) => {
-        // last item
-        if (inpRes.id !== dummyID) {
-          res.push(inpRes);
-        }
+        // last item (not checking for initRes since prompter.prompts() and .prompt() check for valid parameter)
+        res.push(inpRes);
 
         // pause stdin
         this.rl.pause();
@@ -298,27 +273,27 @@ class PromptImpl {
 }
 
 // private prompt module
-let prompt: PromptImpl; // = new PromptImpl();
+const prompt: PromptImpl = new PromptImpl();
 
 /**
  * Prompt module definition
  */
 export interface Prompt {
-  prompt: (inp: PromptInput) => Promise<PromptResult>;
-  prompts: (inps: PromptInput[]) => Promise<PromptResult[]>;
+  init: () => void;                                             // intialization function (if needed later)
+  prompt: (inp: PromptInput) => Promise<PromptResult>;          // single prompt
+  prompts: (inps: PromptInput[]) => Promise<PromptResult[]>;    // 1-n prompts
 }
 
 /**
  * Implementation of prompt module
  */
 const prompter: Prompt = {
+  init: () => {},
   prompt: async (inp: PromptInput): Promise<PromptResult> => {
-    if (inp) {
-      prompt = new PromptImpl();
-      return prompt.prompt(inp);
-    } else {
-      throw new Error(`Invalid PromptInput`);
-    }
+    // no null/undefined check as we are forcing null check with tsconfig.json
+    return prompt.prompts([inp]).then((res: PromptResult[]): PromptResult => {
+      return res[0];
+    });
   },
   prompts: async (inps: PromptInput[]): Promise<PromptResult[]> => {
     if (inps && inps.length > 0) {
