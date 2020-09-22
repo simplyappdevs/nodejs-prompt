@@ -68,28 +68,13 @@ var PromptImpl = /** @class */ (function () {
             input: process.stdin,
             output: process.stdout
         });
-        console.log("" + JSON.stringify(this.rl));
         // trap events
         this.rl.on('line', function (input) {
-            if (_this.onLineCB) {
-                _this.onLineCB(input);
-            }
+            _this.onLineCB(input);
         }).on('close', function () {
-            if (_this.onCloseCB) {
-                _this.onCloseCB();
-            }
-        }).on('pause', function () {
-            if (_this.onPauseResumeCB) {
-                _this.onPauseResumeCB(true);
-            }
-        }).on('resume', function () {
-            if (_this.onPauseResumeCB) {
-                _this.onPauseResumeCB(false);
-            }
+            _this.onCloseCB();
         }).on('SIGTSTP', function () {
-            if (_this.onInterruptedCB) {
-                _this.onInterruptedCB('SIGTSTP');
-            }
+            _this.onInterruptedCB('SIGTSTP');
         });
         // default cb
         this.setDefaultCBs();
@@ -106,12 +91,6 @@ var PromptImpl = /** @class */ (function () {
     PromptImpl.prototype.defOnCloseCB = function () { };
     ;
     /**
-     * Default pause/resume event handlers
-     * @param isPaused True if paused, false if resumed
-     */
-    PromptImpl.prototype.defOnPauseResumeCB = function (isPaused) { };
-    ;
-    /**
      * Default interrupted event handler
      * @param type Type of interruption SIGTSTP, SIGINT, SIGCONT
      */
@@ -123,7 +102,6 @@ var PromptImpl = /** @class */ (function () {
     PromptImpl.prototype.setDefaultCBs = function () {
         this.onLineCB = this.defOnLineCB;
         this.onCloseCB = this.defOnCloseCB;
-        this.onPauseResumeCB = this.defOnPauseResumeCB;
         this.onInterruptedCB = this.defOnInterruptedCB;
     };
     /**
@@ -147,7 +125,8 @@ var PromptImpl = /** @class */ (function () {
                         _this.onInterruptedCB = function (type) {
                             reject(new Error("Stream interrupted: " + type));
                         };
-                        console.log('');
+                        // spacing
+                        var promptText = "\n";
                         // display list if any
                         if (inp.promptList && inp.promptList.length > 0) {
                             // figure out the longest key
@@ -162,7 +141,8 @@ var PromptImpl = /** @class */ (function () {
                             // max key length - we'll use it to separate between key and text
                             var maxKeyLen_1 = maxKeyItem.key.length + 3;
                             inp.promptList.forEach(function (item) {
-                                console.log("" + item.key.padEnd(maxKeyLen_1, ' ') + item.text);
+                                // prompt list
+                                promptText += "" + item.key.padEnd(maxKeyLen_1, ' ') + item.text + "\n";
                             });
                         }
                         // build prompt
@@ -173,7 +153,8 @@ var PromptImpl = /** @class */ (function () {
                         else {
                             prompt = inp.prompt + " > ";
                         }
-                        _this.rl.setPrompt(prompt);
+                        promptText += prompt;
+                        _this.rl.setPrompt(promptText);
                         _this.rl.prompt();
                     })];
             });
@@ -185,11 +166,10 @@ var PromptImpl = /** @class */ (function () {
      */
     PromptImpl.prototype.getInputCheck = function (inp) {
         return __awaiter(this, void 0, void 0, function () {
-            var stayLoop, res, errMsg, _loop_1, this_1, state_1;
+            var res, errMsg, _loop_1, this_1, state_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        stayLoop = true;
                         errMsg = '';
                         _loop_1 = function () {
                             var hasPromptList, inputVal_1, found;
@@ -201,34 +181,42 @@ var PromptImpl = /** @class */ (function () {
                                         return [4 /*yield*/, this_1.getInput(inp)];
                                     case 1:
                                         // get input
+                                        //console.log(`${Date.now().toString()}::getInput(): input: ${JSON.stringify(inp)}`);
                                         res = _a.sent();
                                         hasPromptList = inp.promptList ? inp.promptList.length > 0 ? true : false : false;
                                         // figure out if we need to keep looping (if user entered invalid option for list)
-                                        if (res.endIfEmpty && inp.defaultValue === '' && res.enteredValue === '') {
+                                        if (inp.endIfEmpty && res.enteredValue === '') {
                                             // exit error since user input nothing
-                                            stayLoop = false;
                                             errMsg = "User did not enter value";
                                             return [2 /*return*/, "break"];
                                         }
-                                        if (inp.defaultValue !== '' && res.enteredValue === '') {
+                                        if (inp.defaultValue !== '' && res.enteredValue === '' && inp.allowEmptyValue) {
                                             // ok to not enter any input since there is default value
-                                            stayLoop = false;
                                             res.enteredValue = inp.defaultValue;
                                             return [2 /*return*/, "break"];
                                         }
-                                        if (!hasPromptList && res.enteredValue !== '') {
-                                            // got input
-                                            stayLoop = false;
-                                            return [2 /*return*/, "break"];
+                                        // non-list prompt
+                                        if (!hasPromptList) {
+                                            // has input
+                                            if (res.enteredValue !== '') {
+                                                return [2 /*return*/, "break"];
+                                            }
+                                            // no input but empty string allowed
+                                            if (inp.allowEmptyValue && res.enteredValue === '') {
+                                                return [2 /*return*/, "break"];
+                                            }
                                         }
-                                        if (hasPromptList && res.enteredValue !== '') {
+                                        if (hasPromptList) {
+                                            // determine "enteredValue"
+                                            if (res.enteredValue === '' && inp.defaultValue !== '') {
+                                                // use default value
+                                                res.enteredValue = inp.defaultValue;
+                                            }
                                             inputVal_1 = res.enteredValue.toLowerCase();
                                             found = inp.promptList.some(function (inpItem) {
                                                 return inpItem.key.toLowerCase() === inputVal_1;
                                             });
                                             if (found) {
-                                                // user entered one of the options
-                                                stayLoop = false;
                                                 return [2 /*return*/, "break"];
                                             }
                                         }
@@ -239,7 +227,7 @@ var PromptImpl = /** @class */ (function () {
                         this_1 = this;
                         _a.label = 1;
                     case 1:
-                        if (!stayLoop) return [3 /*break*/, 3];
+                        if (!true) return [3 /*break*/, 3];
                         return [5 /*yield**/, _loop_1()];
                     case 2:
                         state_1 = _a.sent();
@@ -259,19 +247,6 @@ var PromptImpl = /** @class */ (function () {
         });
     };
     /**
-     * Single prompt
-     * @param inp PromptInput
-     */
-    PromptImpl.prototype.prompt = function (inp) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.prompts([inp]).then(function (res) {
-                        return res[0];
-                    })];
-            });
-        });
-    };
-    /**
      * Multiple prompts
      * @param inps PromptInput[]
      */
@@ -280,11 +255,6 @@ var PromptImpl = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        // invalid input
-                        if (!inps || inps.length === 0) {
-                            reject(new Error("Invalid parameters"));
-                            return;
-                        }
                         // result
                         var res = [];
                         var dummyID = '--INITPROMISE--';
@@ -295,13 +265,12 @@ var PromptImpl = /** @class */ (function () {
                                 if (inpRes.id !== dummyID) {
                                     res.push(inpRes);
                                 }
+                                //console.log(`${Date.now().toString()}::prompts(): input: ${JSON.stringify(cur)}`);
                                 return _this.getInputCheck(cur);
                             });
                         }, Promise.resolve(initRes)).then(function (inpRes) {
-                            // last item
-                            if (inpRes.id !== dummyID) {
-                                res.push(inpRes);
-                            }
+                            // last item (not checking for initRes since prompter.prompts() and .prompt() check for valid parameter)
+                            res.push(inpRes);
                             // pause stdin
                             _this.rl.pause();
                             resolve(res);
@@ -317,21 +286,18 @@ var PromptImpl = /** @class */ (function () {
     return PromptImpl;
 }());
 // private prompt module
-var prompt; // = new PromptImpl();
+var prompt = new PromptImpl();
 /**
  * Implementation of prompt module
  */
 var prompter = {
+    init: function () { },
     prompt: function (inp) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            if (inp) {
-                prompt = new PromptImpl();
-                return [2 /*return*/, prompt.prompt(inp)];
-            }
-            else {
-                throw new Error("Invalid PromptInput");
-            }
-            return [2 /*return*/];
+            // no null/undefined check as we are forcing null check with tsconfig.json
+            return [2 /*return*/, prompt.prompts([inp]).then(function (res) {
+                    return res[0];
+                })];
         });
     }); },
     prompts: function (inps) { return __awaiter(void 0, void 0, void 0, function () {

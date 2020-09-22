@@ -19,9 +19,11 @@
     "test": "jest",
     "build:common": "tsc --project tsconfig.json",
     "build:esm": "tsc --project tsconfig-esm.json",
-    "build:clean": "rm -rf ./dist/*",
-    "build": "npm run build:clean && npm run build:common && npm run build:esm",
-    "exec": "node ./dist/index.js",
+    "build:examples": "tsc --project tsconfig-examples.json",
+    "clean": "rm -rf ./dist/*",
+    "clean:examples": "rm -rf ./dist-examples/*",
+    "build": "npm run clean && npm run build:common && npm run build:esm",
+    "exec": "node --experimental-modules --es-module-specifier-resolution=node ./dist-examples/examples/index.js",
     "prepublishOnly": "npm run build"
   },
   "repository": {

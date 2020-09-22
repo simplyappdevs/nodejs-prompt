@@ -14,6 +14,7 @@ export interface PromptInput {
     prompt: string;
     promptList?: PromptItem[];
     endIfEmpty: boolean;
+    allowEmptyValue: boolean;
     defaultValue: string;
     valueToEndPrompt: string;
 }
@@ -27,6 +28,7 @@ export interface PromptResult extends PromptInput {
  * Prompt module definition
  */
 export interface Prompt {
+    init: () => void;
     prompt: (inp: PromptInput) => Promise<PromptResult>;
     prompts: (inps: PromptInput[]) => Promise<PromptResult[]>;
 }
