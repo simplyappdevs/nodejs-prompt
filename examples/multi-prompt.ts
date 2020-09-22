@@ -10,7 +10,7 @@ const inp01: PromptInput = {
   defaultValue: '',
   endIfEmpty: false,
   valueToEndPrompt: '',
-  prompt: 'Enter first name'
+  prompt: 'Enter full name'
 };
 
 const inp02: PromptInput = {
