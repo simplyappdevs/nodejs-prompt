@@ -11,9 +11,9 @@
   "type": "module",
   "module": "./dist/esm/index.js",
   "files": [
-    "./dist",
-    "./src",
-    "./examples",
+    "dist",
+    "src",
+    "examples",
     "README.md"
   ],
   "scripts": {
