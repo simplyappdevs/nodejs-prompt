@@ -1,3 +1,4 @@
-import {default as _prompter} from './dist/index.js';
-export const prompter = _prompter.prompter;
+import prompter from './dist/esm/index.js';
+
+export const prompter = prompter.prompter;
 export default prompter;
