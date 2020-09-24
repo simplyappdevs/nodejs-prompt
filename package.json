@@ -12,6 +12,8 @@
   "module": "./dist/esm/index.js",
   "files": [
     "./dist",
+    "./src",
+    "./examples",
     "README.md"
   ],
   "scripts": {
@@ -24,7 +26,7 @@
     "clean:examples": "rm -rf ./dist-examples/*",
     "build": "npm run clean && npm run build:common && npm run build:esm",
     "exec": "node --experimental-modules --es-module-specifier-resolution=node ./dist-examples/examples/index.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run clean && npm run test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -35,7 +37,9 @@
     "prompt",
     "stdin",
     "readline",
-    "module"
+    "module",
+    "reductive promise chaining",
+    "recursive promise chaining"
   ],
   "author": "SimplyAppDevs",
   "license": "GPL-3.0",
