@@ -50,6 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.prompter = void 0;
 /**
  * Node imports
  */
@@ -290,7 +291,7 @@ var prompt = new PromptImpl();
 /**
  * Implementation of prompt module
  */
-var prompter = {
+exports.prompter = {
     init: function () { },
     prompt: function (inp) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -313,4 +314,4 @@ var prompter = {
     }); }
 };
 // export
-exports.default = prompter;
+exports.default = exports.prompter;

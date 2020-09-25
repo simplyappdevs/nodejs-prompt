@@ -35,6 +35,6 @@ export interface Prompt {
 /**
  * Implementation of prompt module
  */
-declare const prompter: Prompt;
+export declare const prompter: Prompt;
 export default prompter;
 //# sourceMappingURL=prompter.d.ts.map

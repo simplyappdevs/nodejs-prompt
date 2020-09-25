@@ -285,7 +285,7 @@ var prompt = new PromptImpl();
 /**
  * Implementation of prompt module
  */
-var prompter = {
+export var prompter = {
     init: function () { },
     prompt: function (inp) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
