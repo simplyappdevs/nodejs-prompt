@@ -1,1 +1,2 @@
-export { default as prompter } from './prompter';
+export * from './prompter';
+//# sourceMappingURL=index.js.map
