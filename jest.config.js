@@ -6,9 +6,11 @@ export default {
   testPathIgnorePatterns: [
     "/lib/",
     "/node_modules/",
-    "/src/examples/",
     "^.+\\.data\.ts?$"
   ],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   collectCoverage: true,
+  collectCoverageFrom: [
+    "src/**/{!(index),}.ts"
+  ]
 };

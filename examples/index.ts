@@ -1,7 +1,7 @@
 /**
  * App imports
  */
-import prompter, {PromptInput, PromptItem, PromptResult} from '../src/prompter';
+import {prompter, PromptInput, PromptItem, PromptResult} from '../src';
 import {multiPrompt} from './multi-prompt';
 import {
   singlePromptNoDefEndIfEmptyDontAllowEmpty,

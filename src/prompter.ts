@@ -287,7 +287,7 @@ export interface Prompt {
 /**
  * Implementation of prompt module
  */
-const prompter: Prompt = {
+export const prompter: Prompt = {
   init: () => {},
   prompt: async (inp: PromptInput): Promise<PromptResult> => {
     // no null/undefined check as we are forcing null check with tsconfig.json
