@@ -113,7 +113,7 @@ Property | Type | Required | Comment
  endIfEmpty | boolean | Y | True will end prompt session if user enter empty string `''`
  valueToEndPrompt | string | N | Future used?
  prompt | string | Y | Prompt text
- promptListTitle | string | B | Prompt list title
+ promptListTitle | string | N | Prompt list title
  promptList | PromptItem[] | N | List of prompt options
 
 > ### PromptItem
