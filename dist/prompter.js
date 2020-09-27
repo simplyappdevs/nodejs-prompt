@@ -127,7 +127,7 @@ var PromptImpl = /** @class */ (function () {
                             reject(new Error("Stream interrupted: " + type));
                         };
                         // spacing
-                        var promptText = "\n";
+                        var promptText = '\n';
                         // display list if any
                         if (inp.promptList && inp.promptList.length > 0) {
                             // figure out the longest key
@@ -141,9 +141,12 @@ var PromptImpl = /** @class */ (function () {
                             }, inp.promptList[0]);
                             // max key length - we'll use it to separate between key and text
                             var maxKeyLen_1 = maxKeyItem.key.length + 3;
+                            // reduce to build options
                             promptText = inp.promptList.reduce(function (prev, cur) {
-                                return "" + prev + cur.key.padEnd(maxKeyLen_1, '.') + cur.text + "\n";
-                            }, inp.promptListTitle ? inp.promptListTitle + "\n" : '');
+                                return "" + prev + cur.key.padEnd(maxKeyLen_1, ' ') + cur.text + "\n";
+                            }, inp.promptListTitle ? "\n" + inp.promptListTitle + "\n" : '\n');
+                            // append \n
+                            promptText += '\n';
                         }
                         // build prompt
                         var prompt = '';
