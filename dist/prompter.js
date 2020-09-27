@@ -141,10 +141,9 @@ var PromptImpl = /** @class */ (function () {
                             }, inp.promptList[0]);
                             // max key length - we'll use it to separate between key and text
                             var maxKeyLen_1 = maxKeyItem.key.length + 3;
-                            inp.promptList.forEach(function (item) {
-                                // prompt list
-                                promptText += "" + item.key.padEnd(maxKeyLen_1, ' ') + item.text + "\n";
-                            });
+                            promptText = inp.promptList.reduce(function (prev, cur) {
+                                return "" + prev + cur.key.padEnd(maxKeyLen_1, '.') + cur.text + "\n";
+                            }, inp.promptListTitle ? inp.promptListTitle + "\n" : '');
                         }
                         // build prompt
                         var prompt = '';

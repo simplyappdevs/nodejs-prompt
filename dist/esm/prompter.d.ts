@@ -12,6 +12,7 @@ export interface PromptItem {
 export interface PromptInput {
     id: string;
     prompt: string;
+    promptListTitle?: string;
     promptList?: PromptItem[];
     endIfEmpty: boolean;
     allowEmptyValue: boolean;

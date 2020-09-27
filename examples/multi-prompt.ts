@@ -21,6 +21,7 @@ const inp02: PromptInput = {
 const inp03: PromptInput = {
   ...inp02,
   endIfEmpty: true,
+  promptListTitle: 'Gender:',
   promptList: [
     {id: 1, key: 'M', text: 'Male'},
     {id: 2, key: 'F', text: 'Female'}
