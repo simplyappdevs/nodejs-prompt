@@ -167,83 +167,57 @@ var PromptImpl = /** @class */ (function () {
      */
     PromptImpl.prototype.getInputCheck = function (inp) {
         return __awaiter(this, void 0, void 0, function () {
-            var res, errMsg, _loop_1, this_1, state_1;
+            var res, errMsg;
+            var _this = this;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        errMsg = '';
-                        _loop_1 = function () {
-                            var hasPromptList, inputVal_1, found;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        // reset CBs
-                                        this_1.setDefaultCBs();
-                                        return [4 /*yield*/, this_1.getInput(inp)];
-                                    case 1:
-                                        // get input
-                                        //console.log(`${Date.now().toString()}::getInput(): input: ${JSON.stringify(inp)}`);
-                                        res = _a.sent();
-                                        hasPromptList = inp.promptList ? inp.promptList.length > 0 ? true : false : false;
-                                        // figure out if we need to keep looping (if user entered invalid option for list)
-                                        if (inp.endIfEmpty && res.enteredValue === '') {
-                                            // exit error since user input nothing
-                                            errMsg = "User did not enter value";
-                                            return [2 /*return*/, "break"];
-                                        }
-                                        if (inp.defaultValue !== '' && res.enteredValue === '' && inp.allowEmptyValue) {
-                                            // ok to not enter any input since there is default value
-                                            res.enteredValue = inp.defaultValue;
-                                            return [2 /*return*/, "break"];
-                                        }
-                                        // non-list prompt
-                                        if (!hasPromptList) {
-                                            // has input
-                                            if (res.enteredValue !== '') {
-                                                return [2 /*return*/, "break"];
-                                            }
-                                            // no input but empty string allowed
-                                            if (inp.allowEmptyValue && res.enteredValue === '') {
-                                                return [2 /*return*/, "break"];
-                                            }
-                                        }
-                                        if (hasPromptList) {
-                                            // determine "enteredValue"
-                                            if (res.enteredValue === '' && inp.defaultValue !== '') {
-                                                // use default value
-                                                res.enteredValue = inp.defaultValue;
-                                            }
-                                            inputVal_1 = res.enteredValue.toLowerCase();
-                                            found = inp.promptList.some(function (inpItem) {
-                                                return inpItem.key.toLowerCase() === inputVal_1;
-                                            });
-                                            if (found) {
-                                                return [2 /*return*/, "break"];
-                                            }
-                                        }
-                                        return [2 /*return*/];
-                                }
+                errMsg = '';
+                // reset CBs
+                this.setDefaultCBs();
+                // get input
+                return [2 /*return*/, this.getInput(inp).then(function (res) {
+                        // determine if there is a prompt list
+                        var hasPromptList = inp.promptList ? inp.promptList.length > 0 ? true : false : false;
+                        // figure out if we need to keep looping (if user entered invalid option for list)
+                        if (inp.endIfEmpty && res.enteredValue === '') {
+                            // exit error since user input nothing
+                            throw new Error("User did not enter value");
+                        }
+                        if (inp.defaultValue !== '' && res.enteredValue === '' && inp.allowEmptyValue) {
+                            // ok to not enter any input since there is default value
+                            res.enteredValue = inp.defaultValue;
+                            return res;
+                        }
+                        // non-list prompt
+                        if (!hasPromptList) {
+                            // has input
+                            if (res.enteredValue !== '') {
+                                return res;
+                            }
+                            if (inp.allowEmptyValue && res.enteredValue === '') {
+                                // no input but empty string allowed
+                                return res;
+                            }
+                        }
+                        if (hasPromptList) {
+                            // determine "enteredValue"
+                            if (res.enteredValue === '' && inp.defaultValue !== '') {
+                                // use default value
+                                res.enteredValue = inp.defaultValue;
+                            }
+                            // lowercase for comparison
+                            var inputVal_1 = res.enteredValue.toLowerCase();
+                            // validate the entered value is one of the list
+                            var found = inp.promptList.some(function (inpItem) {
+                                return inpItem.key.toLowerCase() === inputVal_1;
                             });
-                        };
-                        this_1 = this;
-                        _a.label = 1;
-                    case 1:
-                        if (!true) return [3 /*break*/, 3];
-                        return [5 /*yield**/, _loop_1()];
-                    case 2:
-                        state_1 = _a.sent();
-                        if (state_1 === "break")
-                            return [3 /*break*/, 3];
-                        return [3 /*break*/, 1];
-                    case 3:
-                        if (errMsg !== '') {
-                            throw new Error(errMsg);
+                            if (found) {
+                                // user entered one of the options
+                                return res;
+                            }
                         }
-                        else {
-                            return [2 /*return*/, res];
-                        }
-                        return [2 /*return*/];
-                }
+                        // falls here means value is not valid - just recurse
+                        return _this.getInputCheck(inp);
+                    })];
             });
         });
     };
