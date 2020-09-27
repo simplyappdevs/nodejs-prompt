@@ -161,43 +161,36 @@ class PromptImpl {
     let res: PromptResult;
     let errMsg: string = '';
 
-    // ingoring JEST coverage warning here
-    while (true) {
-      // reset CBs
-      this.setDefaultCBs();
+    // reset CBs
+    this.setDefaultCBs();
 
-      // get input
-      //console.log(`${Date.now().toString()}::getInput(): input: ${JSON.stringify(inp)}`);
-      res = await this.getInput(inp);
-
+    // get input
+    return this.getInput(inp).then((res: PromptResult) => {
       // determine if there is a prompt list
       const hasPromptList: boolean = inp.promptList ? inp.promptList.length > 0 ? true : false : false;
 
       // figure out if we need to keep looping (if user entered invalid option for list)
       if (inp.endIfEmpty && res.enteredValue === '') {
         // exit error since user input nothing
-        errMsg = `User did not enter value`;
-
-        break;
+        throw new Error(`User did not enter value`);
       }
 
       if (inp.defaultValue !== '' && res.enteredValue === '' && inp.allowEmptyValue) {
         // ok to not enter any input since there is default value
         res.enteredValue = inp.defaultValue;
-
-        break;
+        return res;
       }
 
       // non-list prompt
       if (!hasPromptList) {
         // has input
         if (res.enteredValue !== '') {
-          break;
+          return res;
         }
 
-        // no input but empty string allowed
         if (inp.allowEmptyValue && res.enteredValue === '') {
-          break;
+          // no input but empty string allowed
+          return res;
         }
       }
 
@@ -218,18 +211,13 @@ class PromptImpl {
 
         if (found) {
           // user entered one of the options
-          break;
+          return res;
         }
       }
 
-      // otherwise loop
-    }
-
-    if (errMsg !== '') {
-      throw new Error(errMsg);
-    } else {
-      return res!;
-    }
+      // falls here means value is not valid - just recurse
+      return this.getInputCheck(inp);
+    });
   }
 
   /**
