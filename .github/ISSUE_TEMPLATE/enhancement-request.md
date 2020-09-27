@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: "[feature]: "
-labels: feature request
+name: Enhancement request
+about: Enhancement request to existing codebase
+title: "[enhancement]: "
+labels: enhancement
 assignees: ''
 
 ---
