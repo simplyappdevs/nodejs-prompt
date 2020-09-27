@@ -38,4 +38,3 @@ export interface Prompt {
  */
 export declare const prompter: Prompt;
 export default prompter;
-//# sourceMappingURL=prompter.d.ts.map

@@ -113,3 +113,24 @@ export const res07: PromptResult = {
   ...inp07,
   enteredValue: ''
 };
+
+const promptList02: PromptItem[] = [
+  {id: 1, key: 'XXXXXX', text: 'Item 1'},
+  {id: 2, key: 'YY', text: 'Item 2'},
+];
+
+export const inp08: PromptInput = {
+  id: 'inp08',
+  defaultValue: 'YY',
+  endIfEmpty: false,
+  prompt: 'inp08',
+  valueToEndPrompt: '',
+  allowEmptyValue: false,
+  promptListTitle: 'Prompt Options',
+  promptList: promptList02
+};
+
+export const res08: PromptResult = {
+  ...inp08,
+  enteredValue: ''
+};

@@ -18,7 +18,8 @@ export interface PromptItem {
 export interface PromptInput {
   id: string;                 // ID for this prompt (caller can correlate the result)
   prompt: string;             // prompt text to display for user - default to "Enter your selection: "
-  promptList?: PromptItem[];  // (optional) array of prompt items
+  promptListTitle?: string;   // issue #5 - add prompt list title
+  promptList?: PromptItem[];  // (optional) array of prompt items/options
   endIfEmpty: boolean;        // end prompt if user does not select from selection or enter empty response (otherwise prompt will just loop)
   allowEmptyValue: boolean;   // true to accept empty string as valid input when endIfEmpty=false, false will keep looping until value is entered (non list prompt only)
   defaultValue: string;       // default value to return if user does not select from selection or enter empty response
@@ -115,7 +116,7 @@ class PromptImpl {
       };
 
       // spacing
-      let promptText: string = `\n`;
+      let promptText: string = '\n';
 
       // display list if any
       if (inp.promptList && inp.promptList.length > 0) {
@@ -131,10 +132,13 @@ class PromptImpl {
         // max key length - we'll use it to separate between key and text
         const maxKeyLen: number = maxKeyItem.key.length + 3;
 
-        inp.promptList.forEach((item: PromptItem) => {
-          // prompt list
-          promptText += `${item.key.padEnd(maxKeyLen, ' ')}${item.text}\n`;
-        });
+        // reduce to build options
+        promptText = inp.promptList.reduce((prev: string, cur: PromptItem): string => {
+          return `${prev}${cur.key.padEnd(maxKeyLen, ' ')}${cur.text}\n`;
+        }, inp.promptListTitle ? `\n${inp.promptListTitle}\n` : '\n');
+
+        // append \n
+        promptText += '\n';
       }
 
       // build prompt

@@ -36,6 +36,7 @@ const inp: PromptInput = {
   defaultValue: 'X',
   endIfEmpty: false,
   valueToEndPrompt: '',
+  promptListTitle: 'Avalable demos:',
   promptList: menuItems,
   prompt: 'Select an example to run'
 };

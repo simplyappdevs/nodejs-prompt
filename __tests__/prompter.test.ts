@@ -19,7 +19,8 @@ import {
   inp04,
   inp05,
   inp06,
-  inp07
+  inp07,
+  inp08
 } from './prompt.data';
 
 /**
@@ -49,10 +50,13 @@ function buildPrompt(inp: PromptInput): string {
     // max key length - we'll use it to separate between key and text
     const maxKeyLen: number = maxKeyItem.key.length + 3;
 
-    inp.promptList.forEach((item: PromptItem) => {
-      // prompt list
-      promptText += `${item.key.padEnd(maxKeyLen, ' ')}${item.text}\n`;
-    });
+    // reduce to build options
+    promptText = inp.promptList.reduce((prev: string, cur: PromptItem): string => {
+      return `${prev}${cur.key.padEnd(maxKeyLen, ' ')}${cur.text}\n`;
+    }, inp.promptListTitle ? `\n${inp.promptListTitle}\n` : '\n');
+
+    // append \n
+    promptText += '\n';
   }
 
   // build prompt
@@ -286,15 +290,17 @@ describe('prompter', () => {
       inp06,
       inp01,
       inp04,
+      inp08
     ];
 
-    test(`should return error when enteredValue=[AA, \'\', 101]\n\t[${JSON.stringify(inp06)}]\n\t[${JSON.stringify(inp01)}]\n\t[${JSON.stringify(inp04)}]`, async () => {
+    test(`should return error when enteredValue=[AA, \'\', 101, \'YY\']\n\t[${JSON.stringify(inp06)}]\n\t[${JSON.stringify(inp01)}]\n\t[${JSON.stringify(inp04)}]`, async () => {
       // set output
       mockRL.addEvent('line', 'AA');
       mockRL.addEvent('line', '');
       mockRL.addEvent('line', '101');
+      mockRL.addEvent('line', 'YY');
 
-      // expect a rejection (3 expects)
+      // expect a rejection (4 expects)
       expect.assertions(4);
 
       return prompter.prompts(mp01).catch((err) => {
@@ -305,21 +311,24 @@ describe('prompter', () => {
       });
     });
 
-    test(`should return AA, D, 101  when enteredValue=[AA, D, 101]\n\t[${JSON.stringify(inp06)}]\n\t[${JSON.stringify(inp01)}]\n\t[${JSON.stringify(inp04)}]`, async () => {
+    test(`should return AA, D, 101  when enteredValue=[AA, D, 101, \'XXXXXX\']\n\t[${JSON.stringify(inp06)}]\n\t[${JSON.stringify(inp01)}]\n\t[${JSON.stringify(inp04)}]`, async () => {
       // set output
       mockRL.addEvent('line', 'AA');
       mockRL.addEvent('line', 'D');
       mockRL.addEvent('line', '101');
+      mockRL.addEvent('line', 'XXXXXX');
 
       return prompter.prompts(mp01).then((res: PromptResult[]) => {
-        expect(mockRlIF.setPrompt).toBeCalledTimes(3);
+        expect(mockRlIF.setPrompt).toBeCalledTimes(4);
         expect(mockRlIF.setPrompt).toHaveBeenNthCalledWith(1, buildPrompt(inp06));
         expect(mockRlIF.setPrompt).toHaveBeenNthCalledWith(2, buildPrompt(inp01));
         expect(mockRlIF.setPrompt).toHaveBeenNthCalledWith(3, buildPrompt(inp04));
-        expect(res.length).toEqual(3);
+        expect(mockRlIF.setPrompt).toHaveBeenNthCalledWith(4, buildPrompt(inp08));
+        expect(res.length).toEqual(4);
         expect(res[0].enteredValue).toEqual('AA');
         expect(res[1].enteredValue).toEqual('D');
         expect(res[2].enteredValue).toEqual('101');
+        expect(res[3].enteredValue).toEqual('XXXXXX');
       });
     });
   });
