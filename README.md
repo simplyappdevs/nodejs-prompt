@@ -39,6 +39,10 @@
 
 ## Usage
 
+> This module has been configured as ES module. You will need to run your application with `--es-module-specifier-resolution=node` option.
+>
+> Ex: `"exec": "node --es-module-specifier-resolution=node ./dist/index.js"` for your NPM script `npm run exec`
+
 ```typescript
 // import
 import prompter, {PromptInput, PromptResult, PromptItem} from '@simplyappdevs/nodejs-prompt';
