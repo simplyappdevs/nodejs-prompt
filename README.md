@@ -37,11 +37,58 @@
 * Build example: `npm run build:examples`
 * Run example: `npm run exec`
 
-## Usage
+## Configure your application for ESM
 
-> This module has been configured as ES module. You will need to run your application with `--es-module-specifier-resolution=node` option.
+> This module has been configured as ES module (ESM). You will need to run your application with `--es-module-specifier-resolution=node` option.
 >
-> Ex: `"exec": "node --es-module-specifier-resolution=node ./dist/index.js"` for your NPM script `npm run exec`
+> Ex: `"exec": "node --es-module-specifier-resolution=node ./dist/index.js"` for your NPM script `npm run exec`.
+>
+> In addition, set the followings:
+
+## package.json
+
+> Set type to module
+
+```json
+{
+  "name": "nodejs-prompt-example",
+  "version": "1.0.0",
+  "description": "Example for @simplyappdevs/nodejs-prompt NPM package",
+  "main": "index.js",
+  "type": "module",  // **Add this line**
+  "scripts": {
+  }
+  ...
+}
+```
+
+## tsconfig.json
+
+> Set module to one of ECMA script
+
+```json
+{
+  "compilerOptions": {
+    ...
+    "module": "esnext",                     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
+    ...
+  }
+}
+```
+
+> Set module resolution to `node`
+
+```json
+{
+  "compilerOptions": {
+    ...
+    "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    ...
+  }
+}
+```
+
+## Usage
 
 ```typescript
 // import
