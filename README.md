@@ -88,6 +88,10 @@
 }
 ```
 
+## Examples
+
+> You can head to <https://github.com/simplyappdevs/nodejs-prompt-example> to see list of examples on how to use this module.
+
 ## Usage
 
 ```typescript
