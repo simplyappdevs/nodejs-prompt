@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1601246447686" clover="3.2.0">
-  <project timestamp="1601246447686" name="All files">
+<coverage generated="1626534453050" clover="3.2.0">
+  <project timestamp="1626534453051" name="All files">
     <metrics statements="93" coveredstatements="93" conditionals="45" coveredconditionals="45" methods="31" coveredmethods="28" elements="169" coveredelements="166" complexity="0" loc="93" ncloc="93" packages="1" files="1" classes="1"/>
-    <file name="prompter.ts" path="/Users/azmizar/Projects/SimplyAppDevs/nodejs/nodejs-prompt/src/prompter.ts">
+    <file name="prompter.ts" path="C:\Projects\SimplyAppDevs\Packages\nodejs-prompt\src\prompter.ts">
       <metrics statements="93" coveredstatements="93" conditionals="45" coveredconditionals="45" methods="31" coveredmethods="28"/>
       <line num="4" count="1" type="stmt"/>
       <line num="39" count="1" type="stmt"/>
