@@ -57,12 +57,12 @@
   "homepage": "https://github.com/simplyappdevs/nodejs-prompt#readme",
   "devDependencies": {
     "@atao60/fse-cli": "^0.1.7",
-    "@types/jest": "^26.0.13",
-    "@types/node": "^14.0.27",
-    "jest": "^26.4.2",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.10",
+    "jest": "^27.1.0",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.3.0",
-    "typescript": "^3.9.7"
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.2"
   },
   "dependencies": {
     "@simplyappdevs/logging-helper": "^1.1.0"
