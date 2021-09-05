@@ -1,35 +1,8 @@
 {
+  "extends": "./tsconfig-base.json",
   "compilerOptions": {
-    "declaration": true,
-    "declarationMap": true,
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "jsx": "react",
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "downlevelIteration": true,
-    "lib": [
-      "es5",
-      "es6",
-      "es7",
-      "es2017",
-      "es2020",
-      "dom"
-    ],
-    "strict": true,
-    "skipLibCheck": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
-  },
-  "exclude": [
-    "__tests__/**/*",
-    "__mocks__/**/*",
-    "node_modules",
-    "examples",
-    "dist"
-  ]
+    "target": "esnext",                       /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
+    "module": "esnext",                       /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
+    "outDir": "./dist/esm"                   /* Redirect output structure to the directory. */
+  }
 }
