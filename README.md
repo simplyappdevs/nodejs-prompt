@@ -29,68 +29,61 @@
 ## Manual Build
 
 * Clone repo: `git clone https://github.com/simplyappdevs/nodejs-prompt`
+* CWD: `cd nodejs-prompt`
 * Install deps: `npm i`
 * Clear existing output: `npm run clean`
 * Build module: `npm run build`
 * Test: `npm test`
-* Clear existing example output: `npm run clean:examples`
-* Build example: `npm run build:examples`
-* Run example: `npm run exec`
 
-## Configure your application for ESM
+## Example
 
-> This module has been configured as ES module (ESM). You will need to run your application with `--es-module-specifier-resolution=node` option.
+> Examples on how to use this module is available from [https://github.com/simplyappdevs/nodejs-prompt-example](https://github.com/simplyappdevs/nodejs-prompt-example)
+
+## Reminder for ESM Application
+
+### npm exec command option
+
+> You will need to run your application with `--es-module-specifier-resolution=node` option.
 >
 > Ex: `"exec": "node --es-module-specifier-resolution=node ./dist/index.js"` for your NPM script `npm run exec`.
->
-> In addition, set the followings:
 
-## package.json
+### Configure package.json
 
-> Set type to module
+> Set type to module `"type": "module"`
 
 ```json
 {
   "name": "nodejs-prompt-example",
   "version": "1.0.0",
-  "description": "Example for @simplyappdevs/nodejs-prompt NPM package",
+  "description": "My Awesome App",
   "main": "index.js",
-  "type": "module",  // **Add this line**
+  "type": "module",
   "scripts": {
   }
-  ...
 }
 ```
 
-## tsconfig.json
+### Configure tsconfig.json
 
-> Set module to one of ECMA script
+> Set module to one of ECMA script `"module": "esnext"` in `compilerOptions` section
 
 ```json
 {
   "compilerOptions": {
-    ...
-    "module": "esnext",                     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
-    ...
+    "module": "esnext",
   }
 }
 ```
 
-> Set module resolution to `node`
+> Set module resolution to node `"moduleResolution": "node"` in `compilerOptions` section
 
 ```json
 {
   "compilerOptions": {
-    ...
-    "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
-    ...
+    "moduleResolution": "node",
   }
 }
 ```
-
-## Examples
-
-> You can head to <https://github.com/simplyappdevs/nodejs-prompt-example> to see list of examples on how to use this module.
 
 ## Usage
 
@@ -198,4 +191,4 @@ Property | Type |  Comment
 * [Issues](https://github.com/simplyappdevs/nodejs-prompt/issues)
 * [Developer](https://www.simplyappdevs.com)
 
-Brought to you by www.simplyappdevs.com (2020)
+Brought to you by www.simplyappdevs.com (2021)
