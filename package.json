@@ -1,16 +1,20 @@
 {
   "name": "@simplyappdevs/nodejs-prompt",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "description": "NodeJS prompt module",
   "type": "module",
-  "main": "dist/esm/index.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "typings": "dist/esm/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "exports": {
-    "import": "./dist/esm/index.js",
-    "require": "./dist/index.js",
-    "node": "./dist/esm/index.js",
-    "default": "./dist/index.js"
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./app-cidr": {
+      "import": "./dist/esm/app-cidr.js",
+      "require": "./dist/cjs/app-cidr.js"
+    }
   },
   "files": [
     "dist",
@@ -23,13 +27,13 @@
     "tsc": "tsc",
     "del": "rimraf",
     "test": "jest",
-    "build:common": "tsc --project tsconfig.json",
-    "build:esm": "tsc --project tsconfig-esm.json",
-    "build:examples": "npm run clean:examples && tsc --project tsconfig-examples.json",
+    "cp": "fse copy",
+    "cpesmpkg": "npm run cp ./package-esm.json ./dist/esm/package.json",
+    "cpcjspkg": "npm run cp ./package-cjs.json ./dist/cjs/package.json",
+    "build:common": "tsc --project tsconfig-cjs.json",
+    "build:esm": "tsc --project tsconfig.json",
     "clean": "npm run del ./dist/*",
-    "clean:examples": "npm run del ./dist-examples/*",
-    "build": "npm run clean && npm run build:common && npm run build:esm",
-    "exec": " node --experimental-modules --es-module-specifier-resolution=node ./dist-examples/examples/index.js",
+    "build": "npm run clean && npm run build:common && npm run build:esm && npm run cpesmpkg && npm run cpcjspkg",
     "prepublishOnly": "npm run clean && npm run test && npm run build"
   },
   "repository": {
@@ -52,6 +56,7 @@
   },
   "homepage": "https://github.com/simplyappdevs/nodejs-prompt#readme",
   "devDependencies": {
+    "@atao60/fse-cli": "^0.1.7",
     "@types/jest": "^26.0.13",
     "@types/node": "^14.0.27",
     "jest": "^26.4.2",
@@ -59,8 +64,7 @@
     "ts-jest": "^26.3.0",
     "typescript": "^3.9.7"
   },
-  "directories": {
-    "example": "examples"
-  },
-  "dependencies": {}
+  "dependencies": {
+    "@simplyappdevs/logging-helper": "^1.1.0"
+  }
 }
